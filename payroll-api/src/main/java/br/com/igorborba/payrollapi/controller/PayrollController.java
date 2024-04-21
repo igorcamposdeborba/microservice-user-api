@@ -12,22 +12,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/payment")
 public class PayrollController {
     @Autowired
-    private UserFeign userFeign;
-    @Autowired
     private PayrollServiceImpl payrollServiceImpl;
 
     @GetMapping(value = "/{workerId}")
     public ResponseEntity<Payroll> getPayment(@PathVariable Long workerId, @RequestBody Payroll payment){
-         UserDTO userDTO = userFeign.findById(workerId).getBody();
 
-        Double totalPayment = payrollServiceImpl.totalPayment(userDTO.getHourlyPrice(), payment.getWorkedHours()); // user-api guarda dados FIXOS de hora do usuário
-                                                                                               // payroll-api guarda dados DINÂMICOS calculados de horas trabalhadas
-        return ResponseEntity.ok().body(
-                new Payroll(userDTO.getName(),
-                            payment.getDescription(),
-                            userDTO.getHourlyPrice(),
-                            payment.getWorkedHours(),
-                            totalPayment));
+        Payroll userPayment = payrollServiceImpl.getPayment(workerId, payment); // user-api guarda dados FIXOS de hora do usuário
+                                                                                // payroll-api guarda dados DINÂMICOS calculados de horas trabalhadas
+        return ResponseEntity.ok().body(userPayment);
 
     }
 }

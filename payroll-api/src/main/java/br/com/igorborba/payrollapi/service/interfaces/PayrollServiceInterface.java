@@ -1,7 +1,9 @@
 package br.com.igorborba.payrollapi.service.interfaces;
+import br.com.igorborba.payrollapi.entities.Payroll;
 import org.springframework.stereotype.Service;
 
 public interface PayrollServiceInterface {
-    double totalPayment(Double hourlyPrice, Double workedHours);
+
+    Payroll getPayment(Long workerId, Payroll payment);
 
     }
