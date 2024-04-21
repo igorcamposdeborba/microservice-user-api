@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
-@FeignClient(name = "user-api", url = "http://localhost:8000/") // ! Se conecta com outra API
+@FeignClient(name = "user-api") // ! Se conecta com outra API. Url é distribuída pelo eureka server
 public interface UserFeign {
 
     @GetMapping(value = "/user/{id}")

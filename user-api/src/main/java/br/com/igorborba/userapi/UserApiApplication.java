@@ -2,14 +2,17 @@ package br.com.igorborba.userapi;
 
 import br.com.igorborba.userapi.entities.User;
 import br.com.igorborba.userapi.repositories.UserRepository;
+import com.netflix.discovery.EurekaNamespace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 import java.util.List;
 
 @SpringBootApplication
+@EnableDiscoveryClient
 public class UserApiApplication implements CommandLineRunner {
 
     @Autowired

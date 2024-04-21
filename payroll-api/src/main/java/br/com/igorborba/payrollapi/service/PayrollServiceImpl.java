@@ -20,7 +20,7 @@ public class PayrollServiceImpl implements PayrollServiceInterface {
     private final UserFeign userFeign;
     @Override
     public Payroll getPayment(Long workerId, Payroll payment) { // mostrar porta está chamando o user-api para o load balancer
-        log.info("LOG payroll_service on port: " + env.getProperty("local.server.port"));
+        log.info("LOG http get for payroll_service on port: " + env.getProperty("local.server.port"));
 
         try {
             UserDTO userDTO = userFeign.findById(workerId).getBody();
