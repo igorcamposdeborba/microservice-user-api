@@ -4,6 +4,7 @@ import br.com.igorborba.payrollapi.entities.dto.UserDTO;
 import br.com.igorborba.payrollapi.exceptions.ObjectNotFoundException;
 import br.com.igorborba.payrollapi.feignClients.UserFeign;
 import br.com.igorborba.payrollapi.service.interfaces.PayrollServiceInterface;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
@@ -19,17 +20,19 @@ public class PayrollServiceImpl implements PayrollServiceInterface {
     private final UserFeign userFeign;
     @Override
     public Payroll getPayment(Long workerId, Payroll payment) { // mostrar porta está chamando o user-api para o load balancer
-        log.info("LOG payroll_service: " + env.getProperty("local.server.port"));
+        log.info("LOG payroll_service on port: " + env.getProperty("local.server.port"));
 
-        Optional<UserDTO> userDTO = Optional.ofNullable(userFeign.findById(workerId).getBody());
-        if(userDTO.isEmpty()) {
+        try {
+            UserDTO userDTO = userFeign.findById(workerId).getBody();
+            return new Payroll(userDTO.getName(),
+                    payment.getDescription(),
+                    userDTO.getHourlyPrice(),
+                    payment.getWorkedHours(),
+                    totalPayment(userDTO.getHourlyPrice(), payment.getWorkedHours()));
+
+        } catch (FeignException.NotFound exception){
             throw new ObjectNotFoundException("User not found");
         }
-        return  new Payroll(userDTO.get().getName(),
-                payment.getDescription(),
-                userDTO.get().getHourlyPrice(),
-                payment.getWorkedHours(),
-                totalPayment(userDTO.get().getHourlyPrice(), payment.getWorkedHours())) ;
     }
 
     private double totalPayment(Double hourlyPrice, Double workedHours) {
